@@ -16,7 +16,7 @@ using System.Net.Http;
 namespace com.cleetus
 {
     public static class HTTP_SaveRating {
-        [FunctionName("HTTP_SaveRating")]
+        [FunctionName("SaveRating")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             [CosmosDB(
