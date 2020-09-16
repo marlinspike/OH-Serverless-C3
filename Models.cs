@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace com.cleetus.models
 {
 
@@ -8,7 +10,8 @@ namespace com.cleetus.models
     }
 
     public class UserRating {
-        public string id { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
         public string userId { get; set; }
         public string productId { get; set; }
         public string timestamp { get; set; }
