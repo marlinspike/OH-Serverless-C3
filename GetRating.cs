@@ -7,29 +7,32 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using com.cleetus.models;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
+
 
 namespace com.cleetus
 {
-    public static class GetRating
-    {
+    public static class GetRating {
         [FunctionName("GetRating")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        public async static Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "rating/{id}")] HttpRequest req,
+            [CosmosDB(
+                databaseName: "BFYOC",
+                collectionName: "ratings",
+                ConnectionStringSetting = "CosmosConnectionString",
+                SqlQuery = "select * from ratings r where r.id = {id}")] IEnumerable<UserRating> rating,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            if(! rating.Any())
+                return new NotFoundObjectResult("Not Found");
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult(rating.First());
         }
     }
 }
