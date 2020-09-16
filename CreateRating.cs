@@ -28,10 +28,10 @@ namespace com.cleetus
             //var is_valid = isUserIdValid(data?.userId).GetAwaiter().GetResult();
             var data = JsonConvert.DeserializeObject<Product>(requestBody);
             var user_id = data?.productId;
-            var is_valid = isProductIdValid(data?.productId).GetAwaiter().GetResult();
+            var is_product_valid = isProductIdValid(data?.productId).GetAwaiter().GetResult();
 
 
-            return new OkObjectResult($"IsValid: {is_valid}");
+            return new OkObjectResult($"IsValid: {is_product_valid}");
         }
 
         //Validates rating
