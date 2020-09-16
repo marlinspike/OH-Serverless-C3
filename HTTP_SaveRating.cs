@@ -24,6 +24,7 @@ namespace com.cleetus
             collectionName: "ratings",
             ConnectionStringSetting = "CosmosConnectionString")] IAsyncCollector<UserRating> cosmosDoc,
             ILogger log) {
+                //CI build kickoff
 
             UserRating user_rating = null;
             try {
