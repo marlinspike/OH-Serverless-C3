@@ -7,35 +7,29 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using com.cleetus.models;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
 
 namespace com.cleetus
 {
     public static class GetRating
     {
-        [FunctionName("GetRatings")]
+        [FunctionName("GetRating")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "ratings/{userId}")] HttpRequest req,
-            [CosmosDB(
-                databaseName: "BFYOC",
-                collectionName: "ratings",
-                ConnectionStringSetting = "CosmosConnectionString",
-                SqlQuery = "select * from ratings r where r.userId = {userId}")]  IEnumerable<UserRating> ratings,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("C# HTTP trigger function processed a request.");
 
+            string name = req.Query["name"];
 
-            if (! ratings.Any()) {
-                log.LogInformation("Item not found");
-                //rating = new UserRating();
-                return new NotFoundObjectResult("user not found");
-            }
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            name = name ?? data?.name;
 
-            return new OkObjectResult(ratings);
+            string responseMessage = string.IsNullOrEmpty(name)
+                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+
+            return new OkObjectResult(responseMessage);
         }
     }
 }
