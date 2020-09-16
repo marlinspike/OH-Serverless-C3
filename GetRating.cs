@@ -30,7 +30,7 @@ namespace com.cleetus
 
 
             if(! rating.Any())
-                return new NotFoundObjectResult("Not Found");
+                return new NotFoundObjectResult(new {Status = "Not Found"});
 
             return new OkObjectResult(rating.First());
         }
